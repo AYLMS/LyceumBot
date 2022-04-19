@@ -30,6 +30,3 @@
 * 🔑 Change bot settings in `config.toml`
 * 📎 Install requirements from `requirements.txt`
 * 🚀 Run bot via `python -m app`
-
-## Bots using this template
-👨🏻‍💻 You can [send](https://t.me/fast_geek) me a link to your bot repository and I will post it here.
