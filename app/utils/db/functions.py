@@ -1,6 +1,6 @@
 from abc import ABC
 
-from sqlalchemy import exists, select
+from sqlalchemy import exists, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import func
 
@@ -18,6 +18,14 @@ class DB(AsyncSession, ABC):
         await self.commit()
         return user
 
+    async def get_user(self, user_id) -> User:
+        return await self.scalar(select(User).where(User.id == user_id))
+
     async def get_users_count(self):
         q = func.count(User.id)
         return await self.scalar(q)
+
+    async def change_user(self, user_id, key, value):
+        q = update(User).where(User.id == user_id).values({key: value})
+        await self.execute(q)
+        await self.commit()

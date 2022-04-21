@@ -54,8 +54,7 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     }
 
     logging.debug(f"Groups Mode - {states[bot_info.can_join_groups]}")
-    logging.debug(
-        f"Privacy Mode - {states[not bot_info.can_read_all_group_messages]}")
+    logging.debug(f"Privacy Mode - {states[not bot_info.can_read_all_group_messages]}")
     logging.debug(f"Inline Mode - {states[bot_info.supports_inline_queries]}")
 
     logging.error("Bot started!")
@@ -83,8 +82,7 @@ async def main():
     )
     app.sessionmanager = await db.init(db_url)
 
-    session = AiohttpSession(
-        api=TelegramAPIServer.from_base(config.api.bot_api_url))
+    session = AiohttpSession(api=TelegramAPIServer.from_base(config.api.bot_api_url))
     token = config.bot.test_token if app.arguments.test else config.bot.token
     bot_settings = {"session": session, "parse_mode": "HTML"}
     app.bot = Bot(token, **bot_settings)
