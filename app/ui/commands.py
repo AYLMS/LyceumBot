@@ -4,9 +4,9 @@ from aiogram.types import BotCommand, BotCommandScopeChat, BotCommandScopeDefaul
 import app
 
 users_commands = {
-    "support": "Отправить обращение администратору",
+    "register": "Зарегистрироваться в боте",
     "help": "Показать список команд",
-    "about": "Показать информацию о боте",
+    "info": "Показать информацию о пользователе",
 }
 
 owner_commands = {
