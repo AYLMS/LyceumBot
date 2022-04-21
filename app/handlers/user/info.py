@@ -1,8 +1,10 @@
-from aiogram import Bot
+import pickle
+
 from aiogram.types import Message
+from aiohttp import ClientSession as Session
 
 from app import dp, owner_id
-from app.keyboards.inline.author_keyboard import get_author_keyboard
+from app.common import FMT
 from app.ui.commands import owner_commands, users_commands
 
 
@@ -19,13 +21,19 @@ async def help_handler(message: Message):
     await message.answer(text)
 
 
-@dp.message(commands="about")
-async def about_handler(message: Message, bot: Bot):
-    bot_information = await bot.get_me()
-    text = (
-        "<b>ℹ️ Информация о боте:</b> \n\n"
-        f"<b>Название - </b> {bot_information.full_name} \n"
-        f"<b>Username - </b> @{bot_information.username} \n"
-        f"<b>ID - </b> <code>{bot_information.id}</code> \n"
-    )
-    await message.answer(text, reply_markup=get_author_keyboard())
+@dp.message(commands="info")
+async def info_handler(message: Message, f: FMT):
+    user = await f.db.get_user(message.from_user.id)
+    cookies = pickle.loads(user.cookies)
+    session = Session(cookies=cookies)
+    user_information = await (
+        await session.get(
+            "https://lyceum.yandex.ru/api/profile",
+            params={
+                "withCoursesSummary": "true",
+                "withExpelled": "true",
+                "withChildren": "true",
+                "withParents": "true",
+            },
+        )
+    ).json() # TODO user information parser
