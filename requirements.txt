@@ -9,3 +9,4 @@ sqlalchemy==1.4.35
 tgcrypto==1.2.3
 toml==0.10.2
 aiohttp==3.8.1
+requests==2.27.1
