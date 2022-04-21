@@ -8,6 +8,7 @@ from app.common import FMT
 
 
 class MainMiddleware(BaseMiddleware):
+
     def __init__(self) -> None:
         self.config = config
         self.sessionmanager = sessionmanager

@@ -8,5 +8,4 @@ from app.common import FMT
 async def stats_handler(message: Message, f: FMT):
     count = await f.db.get_users_count()
     await message.answer(
-        f"📊 <b>Количество пользователей бота -</b> <code>{count}</code>"
-    )
+        f"📊 <b>Количество пользователей бота -</b> <code>{count}</code>")

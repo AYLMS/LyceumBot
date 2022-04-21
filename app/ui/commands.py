@@ -35,4 +35,5 @@ async def set_bot_commands(bot: Bot):
 
 async def remove_bot_commands(bot: Bot):
     await bot.delete_my_commands(scope=BotCommandScopeDefault())
-    await bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=app.owner_id))
+    await bot.delete_my_commands(scope=BotCommandScopeChat(
+        chat_id=app.owner_id))

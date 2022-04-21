@@ -10,6 +10,7 @@ cache = TTLCache(maxsize=10_000, ttl=config.settings.throttling_rate)
 
 
 class ThrottlingMiddleware(BaseMiddleware):
+
     async def __call__(
         self,
         handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],

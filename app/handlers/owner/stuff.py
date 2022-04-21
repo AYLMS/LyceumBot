@@ -12,5 +12,4 @@ async def ping_handler(message: Message):
     end = time.perf_counter_ns()
     ping = (end - start) * 0.000001
     await reply_message.edit_text(
-        f"<b>⏱ Ping -</b> <code>{round(ping, 3)}</code> <b>ms</b>"
-    )
+        f"<b>⏱ Ping -</b> <code>{round(ping, 3)}</code> <b>ms</b>")

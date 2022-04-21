@@ -1,5 +1,5 @@
 # sourcery skip: avoid-builtin-shadow
-from sqlalchemy import BigInteger, Column, PickleType, Boolean
+from sqlalchemy import BigInteger, Boolean, Column, PickleType
 
 from app.utils.db.base import Base
 

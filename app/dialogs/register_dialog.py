@@ -1,28 +1,25 @@
 import pickle
 
-from aiogram.types import Message, CallbackQuery
-from aiogram_dialog import DialogManager, Dialog
-from aiogram_dialog import Window
+from aiogram.types import CallbackQuery, Message
+from aiogram_dialog import Dialog, DialogManager, Window
 from aiogram_dialog.manager.protocols import ManagedDialogAdapterProto
 from aiogram_dialog.widgets.input import MessageInput
-from aiogram_dialog.widgets.kbd import Next, SwitchTo, Button
+from aiogram_dialog.widgets.kbd import Button, Next, SwitchTo
 from aiogram_dialog.widgets.text import Const, Format
 from requests import Session
 
-from app import sessionmanager, bot
+from app import bot, sessionmanager
 from app.states.register import RegistrationDialog
 
 
-async def login_handler(
-        m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
-):
+async def login_handler(m: Message, dialog: ManagedDialogAdapterProto,
+                        manager: DialogManager):
     manager.current_context().dialog_data["login"] = m.text
     await dialog.next()
 
 
-async def password_handler(
-        m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
-):
+async def password_handler(m: Message, dialog: ManagedDialogAdapterProto,
+                           manager: DialogManager):
     manager.current_context().dialog_data["password"] = m.text
     await dialog.next()
 
@@ -38,13 +35,11 @@ async def login(c: CallbackQuery, button: Button, manager: DialogManager):
     login = manager.current_context().dialog_data["login"]
     password = manager.current_context().dialog_data["password"]
     request_session = Session()
-    request = request_session.post(
-        "https://passport.yandex.ru/auth",
-        data={
-            "login": login,
-            "passwd": password
-        }
-    )
+    request = request_session.post("https://passport.yandex.ru/auth",
+                                   data={
+                                       "login": login,
+                                       "passwd": password
+                                   })
     print(request.text)
     if request.status_code == 200:
         pickle_dump = pickle.dumps(request_session.cookies)
