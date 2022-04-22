@@ -14,14 +14,14 @@ from app.states.register import RegistrationDialog
 
 
 async def login_handler(
-        m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
+    m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
 ):
     manager.current_context().dialog_data["login"] = m.text
     await dialog.next()
 
 
 async def password_handler(
-        m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
+    m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
 ):
     manager.current_context().dialog_data["password"] = m.text
     await dialog.next()
@@ -39,11 +39,7 @@ async def login(c: CallbackQuery, button: Button, manager: DialogManager):
     password = manager.current_context().dialog_data["password"]
     request_session = Session()
     request = request_session.post(
-        "https://passport.yandex.ru/auth",
-        data={
-            "login": login,
-            "passwd": password
-        }
+        "https://passport.yandex.ru/auth", data={"login": login, "passwd": password}
     )
     print(request.text)
     if request.status_code == 200:

@@ -30,7 +30,7 @@ async def info_handler(message: Message, f: FMT):
         with_expelled=False,
         with_children=False,
         with_parents=False,
-        cookies=user.cookies
+        cookies=user.cookies,
     )
     await message.answer(
         "<b>ℹ️ Информация о пользователе:</b> \n\n"
@@ -48,22 +48,30 @@ async def parents_handler(message: Message, f: FMT):
         with_expelled=False,
         with_children=False,
         with_parents=True,
-        cookies=user.cookies
+        cookies=user.cookies,
     )
-    text = ''
-    if user_information['profile']['parents']:
+    text = ""
+    if user_information["profile"]["parents"]:
         text += "ℹ️ <b>Информация о родителях:</b> \n\n"
-        for parent in user_information['profile']['parents']:
+        for parent in user_information["profile"]["parents"]:
             text += f"▫️ <b>ФИО:</b> {parent['lastName']} {parent['firstName']} {parent['middleName']} \n"
-            text += f"       <b>Телефон:</b> {parent['phone']} \n" if parent['phone'] else ""
-            text += f"       <b>E-mail:</b> {parent['email']} \n" if parent['email'] else ""
+            text += (
+                f"       <b>Телефон:</b> {parent['phone']} \n"
+                if parent["phone"]
+                else ""
+            )
+            text += (
+                f"       <b>E-mail:</b> {parent['email']} \n" if parent["email"] else ""
+            )
             text += "\n"
 
     text += f"🎚 <b>Родителей добавлено: {user_information['profile']['invite']['usesCount']}/{user_information['profile']['invite']['usesLimit']}</b>\n\n"
-    await message.answer(text, reply_markup=get_invite_keyboard(user_information['profile']['invite']['url']))
+    await message.answer(
+        text,
+        reply_markup=get_invite_keyboard(user_information["profile"]["invite"]["url"]),
+    )
 
 
 @dp.message(commands="courses", is_registered=True)
 async def register_handler(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(CoursesDialog.select_courses)
-

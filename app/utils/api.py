@@ -3,8 +3,13 @@ import pickle
 from aiohttp import ClientSession
 
 
-async def get_user_information(with_courses_summary: bool, with_expelled: bool, with_children: bool, with_parents: bool,
-                               cookies: bytes):
+async def get_user_information(
+    with_courses_summary: bool,
+    with_expelled: bool,
+    with_children: bool,
+    with_parents: bool,
+    cookies: bytes,
+):
     cookies = pickle.loads(cookies)
     session = ClientSession(cookies=cookies)
     return await (
