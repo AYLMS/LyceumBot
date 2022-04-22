@@ -22,7 +22,7 @@ async def help_handler(message: Message):
     await message.answer(text)
 
 
-@dp.message(commands="info")
+@dp.message(commands="info", is_registered=True)
 async def info_handler(message: Message, f: FMT):
     user = await f.db.get_user(message.from_user.id)
     cookies = pickle.loads(user.cookies)
@@ -46,7 +46,7 @@ async def info_handler(message: Message, f: FMT):
     )
 
 
-@dp.message(commands="parents")
+@dp.message(commands="parents", is_registered=True)
 async def parents_handler(message: Message, f: FMT):
     user = await f.db.get_user(message.from_user.id)
     cookies = pickle.loads(user.cookies)
