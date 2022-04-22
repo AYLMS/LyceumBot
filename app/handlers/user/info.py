@@ -1,4 +1,5 @@
 from aiogram.types import Message
+from aiogram_dialog import DialogManager
 
 from app import dp, owner_id
 from app.common import FMT
