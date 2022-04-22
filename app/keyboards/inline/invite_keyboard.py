@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from app import owner_id
 
 
-def get_author_keyboard():
+def get_invite_keyboard(url: str):
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text="Автор", url=f"tg://user?id={owner_id}")
+    keyboard.button(text="🔗 Инвайт для родителя", url=url)
     return keyboard.as_markup()
