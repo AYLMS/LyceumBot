@@ -1,12 +1,10 @@
-import pickle
-
 from aiogram.types import Message
-from aiohttp import ClientSession as Session
 
 from app import dp, owner_id
 from app.common import FMT
 from app.keyboards.inline.invite_keyboard import get_invite_keyboard
 from app.ui.commands import owner_commands, users_commands
+from app.utils.api import get_user_information
 
 
 @dp.message(commands="help")
@@ -25,19 +23,13 @@ async def help_handler(message: Message):
 @dp.message(commands="info", is_registered=True)
 async def info_handler(message: Message, f: FMT):
     user = await f.db.get_user(message.from_user.id)
-    cookies = pickle.loads(user.cookies)
-    session = Session(cookies=cookies)
-    user_information = await (
-        await session.get(
-            "https://lyceum.yandex.ru/api/profile",
-            params={
-                "withCoursesSummary": "false",
-                "withExpelled": "false",
-                "withChildren": "false",
-                "withParents": "false",
-            },
-        )
-    ).json()
+    user_information = await get_user_information(
+        with_courses_summary=False,
+        with_expelled=False,
+        with_children=False,
+        with_parents=False,
+        cookies=user.cookies
+    )
     await message.answer(
         "<b>ℹ️ Информация о пользователе:</b> \n\n"
         f"<b>ФИО:</b> {user_information['profile']['lastName']} {user_information['profile']['firstName']} {user_information['profile']['middleName']} \n"
@@ -49,19 +41,13 @@ async def info_handler(message: Message, f: FMT):
 @dp.message(commands="parents", is_registered=True)
 async def parents_handler(message: Message, f: FMT):
     user = await f.db.get_user(message.from_user.id)
-    cookies = pickle.loads(user.cookies)
-    session = Session(cookies=cookies)
-    user_information = await (
-        await session.get(
-            "https://lyceum.yandex.ru/api/profile",
-            params={
-                "withCoursesSummary": "false",
-                "withExpelled": "false",
-                "withChildren": "false",
-                "withParents": "true",
-            },
-        )
-    ).json()
+    user_information = await get_user_information(
+        with_courses_summary=False,
+        with_expelled=False,
+        with_children=False,
+        with_parents=True,
+        cookies=user.cookies
+    )
     text = ''
     if user_information['profile']['parents']:
         text += "ℹ️ <b>Информация о родителях:</b> \n\n"
