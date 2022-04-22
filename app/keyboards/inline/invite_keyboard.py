@@ -1,7 +1,5 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app import owner_id
-
 
 def get_invite_keyboard(url: str):
     keyboard = InlineKeyboardBuilder()

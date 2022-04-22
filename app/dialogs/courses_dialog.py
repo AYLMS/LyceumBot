@@ -1,16 +1,12 @@
-import pickle
 from typing import Any
 
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, Dialog
 from aiogram_dialog import Window
-from aiogram_dialog.manager.protocols import ManagedDialogAdapterProto
-from aiogram_dialog.widgets.input import MessageInput
-from aiogram_dialog.widgets.kbd import Next, SwitchTo, Button, Select, Back, Column, Url
+from aiogram_dialog.widgets.kbd import Button, Select, Back, Column, Url
 from aiogram_dialog.widgets.text import Const, Format
-from aiohttp import ClientSession
 
-from app import sessionmanager, bot
+from app import sessionmanager
 from app.states.courses import CoursesDialog
 from app.utils.api import get_user_information
 
