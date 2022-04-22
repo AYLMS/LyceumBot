@@ -3,6 +3,7 @@ from aiogram.types import Message
 from app import dp, owner_id
 from app.common import FMT
 from app.keyboards.inline.invite_keyboard import get_invite_keyboard
+from app.states.courses import CoursesDialog
 from app.ui.commands import owner_commands, users_commands
 from app.utils.api import get_user_information
 
@@ -59,3 +60,9 @@ async def parents_handler(message: Message, f: FMT):
 
     text += f"🎚 <b>Родителей добавлено: {user_information['profile']['invite']['usesCount']}/{user_information['profile']['invite']['usesLimit']}</b>\n\n"
     await message.answer(text, reply_markup=get_invite_keyboard(user_information['profile']['invite']['url']))
+
+
+@dp.message(commands="courses", is_registered=True)
+async def register_handler(message: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(CoursesDialog.select_courses)
+
