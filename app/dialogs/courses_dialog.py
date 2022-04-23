@@ -21,13 +21,21 @@ async def on_course_selected(
 async def get_data(dialog_manager: DialogManager, **kwargs):
     async with sessionmanager() as session:
         user = await session.get_user(dialog_manager.event.from_user.id)
-    user_information = await get_user_information(
-        with_courses_summary=True,
-        with_expelled=True,
-        with_children=False,
-        with_parents=False,
-        cookies=user.cookies,
+
+    user_information: dict = (
+        dialog_manager.current_context().dialog_data["user_information"]
+        if "user_information" in dialog_manager.current_context().dialog_data
+        else await get_user_information(
+            with_courses_summary=True,
+            with_expelled=True,
+            with_children=False,
+            with_parents=False,
+            cookies=user.cookies,
+        )
     )
+
+    dialog_manager.current_context().dialog_data["user_information"] = user_information
+
     courses = [
         (course["title"], course["id"])
         for course in user_information["coursesSummary"]["student"]
@@ -41,13 +49,7 @@ async def get_data(dialog_manager: DialogManager, **kwargs):
 async def get_course_data(dialog_manager: DialogManager, **kwargs):
     async with sessionmanager() as session:
         user = await session.get_user(dialog_manager.event.from_user.id)
-    user_information = await get_user_information(
-        with_courses_summary=True,
-        with_expelled=True,
-        with_children=False,
-        with_parents=False,
-        cookies=user.cookies,
-    )
+    user_information: dict = dialog_manager.current_context().dialog_data["user_information"]
 
     course_id = dialog_manager.current_context().dialog_data["course_id"]
 
