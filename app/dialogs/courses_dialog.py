@@ -49,7 +49,9 @@ async def get_data(dialog_manager: DialogManager, **kwargs):
 async def get_course_data(dialog_manager: DialogManager, **kwargs):
     async with sessionmanager() as session:
         user = await session.get_user(dialog_manager.event.from_user.id)
-    user_information: dict = dialog_manager.current_context().dialog_data["user_information"]
+    user_information: dict = dialog_manager.current_context().dialog_data[
+        "user_information"
+    ]
 
     course_id = dialog_manager.current_context().dialog_data["course_id"]
 

@@ -1,3 +1,1 @@
-type = {
-    'additiaonal': 'дополнительная'
-}
+type = {"additiaonal": "дополнительная"}
