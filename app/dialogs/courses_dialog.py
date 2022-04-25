@@ -98,7 +98,7 @@ ui = Dialog(
     Window(
         Format("<b>ℹ️ {title}</b> \n"),
         Format("<b>👥 Группа</b>:  <code>{group_name}</code>"),
-        Format("<b>👥 Учителя</b>:  <code>{teachers}</code>"),
+        Format("<b>👥 Учителя</b>:  <code>{teachers}</code>", when="teachers"),
         Format("<b>🎯 Рейтинг</b>:  <code>{rating}</code> \n"),
         Format("<b>Бонусные баллы</b>: <code>{bonusScore}</code>"),
         Format("<b>Количество отправок</b>: <code>{numTasks}</code>"),
