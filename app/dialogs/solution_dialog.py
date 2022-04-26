@@ -9,6 +9,7 @@ from aiogram_dialog.widgets.text import Const, Format
 from app import sessionmanager, bot
 from app.states.solution import SolutionDialog
 from app.utils.api import get_solution_information
+from app.utils.staff import solution_type, solution_verdict
 
 
 async def solution_id_handler(
@@ -31,12 +32,15 @@ async def get_solution_data(dialog_manager: DialogManager, **kwargs):
     solution_data = await get_solution_information(solution_id, cookies)
     file_url = solution_data["solution"]["latestSubmission"]["file"]["url"]
     await bot.send_document(user_id, URLInputFile(file_url, file_url.split("/")[-1]))
+    print(solution_data)
     return {
         "test_result": solution_data["solution"]["status"]["type"],
         "problem_name": solution_data["solution"]["task"]["title"],
-        "problem_tags": type[solution_data["solution"]["task"]["tag"]["type"]],
+        "problem_tag": solution_type[solution_data["solution"]["task"]["tag"]["type"]],
         "score_max": solution_data["solution"]["task"]["scoreMax"],
         "deadline": solution_data["solution"]["task"]["lesson"]["deadline"],
+        "send_time": solution_data["solution"]["latestSubmission"]["file"]["addedTime"],
+        "verdict": solution_verdict[solution_data["solution"]["latestSubmission"]["verdict"]],
     }
 
 
@@ -49,9 +53,10 @@ ui = Dialog(
     Window(
         Format("<b>ℹ️ Информация о решении</b> \n"),
         Format("<b>✏️ Название задачи</b>:  <code>{problem_name}</code>"),
-        Format("<b> Тип задачи</b>:  <code>{problem_tags}</code>", when="teachers"),
-        Format("<b>🎯 Максимальный балл за задачу </b>:  <code>{score_max}</code> \n"),
-        # Format("<b>Бонусные баллы</b>: <code>{bonusScore}</code>"),
+        Format("<b>🗂 Тип задачи</b>:  <code>{problem_tag}</code> \n"),
+        Format("<b>🎯 Максимальный балл за задачу </b>:  <code>{score_max}</code>"),
+        Format("<b>Вердикт</b>: <code>{verdict}</code>"),
+        Format("<b>✉️ Дата отправки</b>: <code>{send_time}</code>"),
         Format("<b>📅 Дедлайн</b>: <code>{deadline}</code>"),
         Button(Const("🚫 Закрыть"), on_click=lambda c, b, m: m.done(), id="close"),
         state=SolutionDialog.solution_info,
