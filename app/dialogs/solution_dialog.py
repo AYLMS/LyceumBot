@@ -33,10 +33,7 @@ async def get_solution_data(dialog_manager: DialogManager, **kwargs):
     solution_data = await get_solution_information(solution_id, cookies)
     file_url = solution_data["solution"]["latestSubmission"]["file"]["url"]
     await bot.send_document(user_id, URLInputFile(file_url, file_url.split("/")[-1]))
-    print(str(solution_data).replace("'", '"'))
-
-    print("verdict", solution_data["solution"]["latestSubmission"]["verdict"])
-    print("result", solution_data["solution"]["status"]["type"])
+    # print(str(solution_data).replace("'", '"'))
     return {
         "test_result": solution_result[solution_data["solution"]["status"]["type"]],
         "solution_score": solution_data["solution"]["score"],
