@@ -4,11 +4,11 @@ from aiohttp import ClientSession
 
 
 async def get_user_information(
-    with_courses_summary: bool,
-    with_expelled: bool,
-    with_children: bool,
-    with_parents: bool,
-    cookies: bytes,
+        with_courses_summary: bool,
+        with_expelled: bool,
+        with_children: bool,
+        with_parents: bool,
+        cookies: bytes,
 ):
     cookies = pickle.loads(cookies)
     session = ClientSession(cookies=cookies)
@@ -63,7 +63,8 @@ async def get_lesson_tasks(lesson_id, course_id, group_id, cookies):
     return await (
         await session.get(
             "https://lyceum.yandex.ru/api/student/lessonTasks",
-            params={"courseId": course_id, "groupId": group_id, "lessonId": lesson_id},
+            params={"courseId": course_id, "groupId": group_id,
+                    "lessonId": lesson_id},
         )
     ).json()
 

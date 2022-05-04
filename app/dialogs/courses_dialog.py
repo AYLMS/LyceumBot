@@ -170,7 +170,9 @@ async def get_task_data(dialog_manager: DialogManager, **kwargs):
         "score_max": task_data['scoreMax'],
         "deadline": task_data['deadline'],
         "manual_check": solution_check_type[bool(task_data['hasManualCheck'])],
-        "solution_id": task_data['solutionId'] if task_data['solutionId'] else None,
+        "solution_id": task_data['solutionId'] if task_data[
+            'solutionId'] else None,
+        "secondary_score": secondary_score,
     }
 
 

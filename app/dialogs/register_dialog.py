@@ -41,7 +41,6 @@ async def login(c: CallbackQuery, button: Button, manager: DialogManager):
     request = request_session.post(
         "https://passport.yandex.ru/auth", data={"login": login, "passwd": password}
     )
-    print(request.text)
     if request.status_code == 200:
         pickle_dump = pickle.dumps(request_session.cookies)
         async with sessionmanager() as session:
