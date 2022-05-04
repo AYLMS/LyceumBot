@@ -3,7 +3,16 @@ from typing import Any
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, Dialog
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Select, Back, Column, Url
+from aiogram_dialog.widgets.kbd import (
+    Button,
+    Select,
+    Back,
+    Column,
+    Url,
+    ScrollingGroup,
+    ListGroup,
+    Cancel, Group,
+)
 from aiogram_dialog.widgets.text import Const, Format
 
 from app import sessionmanager
@@ -12,7 +21,7 @@ from app.utils.api import get_user_information
 
 
 async def on_course_selected(
-    c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
+        c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
 ):
     manager.current_context().dialog_data["course_id"] = int(item_id)
     await manager.dialog().next()
@@ -34,7 +43,8 @@ async def get_data(dialog_manager: DialogManager, **kwargs):
         )
     )
 
-    dialog_manager.current_context().dialog_data["user_information"] = user_information
+    dialog_manager.current_context().dialog_data[
+        "user_information"] = user_information
 
     courses = [
         (course["title"], course["id"])
@@ -93,7 +103,8 @@ ui = Dialog(
     Window(
         Const("<b>📌 Выберите курс</b>"),
         courses_select,
-        Button(Const("🚫 Закрыть"), on_click=lambda c, b, m: m.done(), id="close"),
+        Button(Const("🚫 Закрыть"), on_click=lambda c, b, m: m.done(),
+               id="close"),
         getter=get_data,
         state=CoursesDialog.select_courses,
     ),
