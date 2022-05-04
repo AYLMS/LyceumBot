@@ -9,12 +9,16 @@ from aiogram_dialog.widgets.text import Const, Format
 from app import sessionmanager, bot
 from app.states.solution import SolutionDialog
 from app.utils.api import get_solution_information
-from app.utils.staff import solution_type, solution_verdict, solution_result, \
-    solution_check_type
+from app.utils.staff import (
+    solution_type,
+    solution_verdict,
+    solution_result,
+    solution_check_type,
+)
 
 
 async def solution_id_handler(
-        m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
+    m: Message, dialog: ManagedDialogAdapterProto, manager: DialogManager
 ):
     if "http" in m.text:
         manager.current_context().dialog_data["solution_id"] = m.text.split("/")[-1]
@@ -33,7 +37,6 @@ async def get_solution_data(dialog_manager: DialogManager, **kwargs):
     solution_data = await get_solution_information(solution_id, cookies)
     file_url = solution_data["solution"]["latestSubmission"]["file"]["url"]
     await bot.send_document(user_id, URLInputFile(file_url, file_url.split("/")[-1]))
-    # print(str(solution_data).replace("'", '"'))
     return {
         "test_result": solution_result[solution_data["solution"]["status"]["type"]],
         "solution_score": solution_data["solution"]["score"],
@@ -41,11 +44,13 @@ async def get_solution_data(dialog_manager: DialogManager, **kwargs):
         "problem_tag": solution_type[solution_data["solution"]["task"]["tag"]["type"]],
         "score_max": solution_data["solution"]["task"]["scoreMax"],
         "check_type": solution_check_type[
-            solution_data["solution"]["task"]["hasManualCheck"]],
+            solution_data["solution"]["task"]["hasManualCheck"]
+        ],
         "deadline": solution_data["solution"]["task"]["lesson"]["deadline"],
         "send_time": solution_data["solution"]["latestSubmission"]["file"]["addedTime"],
         "verdict": solution_verdict[
-            solution_data["solution"]["latestSubmission"]["verdict"]],
+            solution_data["solution"]["latestSubmission"]["verdict"]
+        ],
         "is_verdict_ok": solution_data["solution"]["latestSubmission"]["verdict"],
     }
 
