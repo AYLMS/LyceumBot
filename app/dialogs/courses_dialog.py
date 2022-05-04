@@ -23,6 +23,7 @@ from app.utils.api import (
     get_lesson_info,
     get_lesson_tasks, get_task_info,
 )
+from app.utils.score import calculate_score
 from app.utils.staff import task_solution_type, sections_types, lesson_types, \
     solution_check_type
 
@@ -71,10 +72,12 @@ async def get_course_data(dialog_manager: DialogManager, **kwargs):
     ]
 
     course_id = dialog_manager.current_context().dialog_data["course_id"]
-
     for course in user_information["coursesSummary"]["student"]:
         if course["id"] == course_id:
             group_id = course["group"]["id"]
+
+            dialog_manager.current_context().dialog_data[
+                "second_year"] = "Основы промышленного" in course["title"]
 
             dialog_manager.current_context().dialog_data["group_id"] = group_id
 
@@ -121,11 +124,16 @@ async def get_lesson_data(dialog_manager: DialogManager, **kwargs):
 
     lesson_tasks = await get_lesson_tasks(lesson_id, course_id, group_id,
                                           user.cookies)
-
     tasks = []
-
+    second_year = dialog_manager.current_context().dialog_data["second_year"]
+    secondary_score = 0
     for section in lesson_tasks:
         tasks.append((sections_types[section["id"]], section["id"]))
+
+        secondary_score += sum(
+            calculate_score(task["scoreMax"], section["type"], second_year) for
+            task in section['tasks'])
+
         now = [
             (task_solution_type[str(task['solution']['status']['id']) if task[
                 'solution'] else "6"] + ' ' + task[
@@ -139,6 +147,7 @@ async def get_lesson_data(dialog_manager: DialogManager, **kwargs):
         "num_tasks": lesson_data["numTasks"],
         "num_passed": lesson_data["numPassed"],
         "tasks": tasks,
+        "secondary_score": secondary_score,
     }
 
 
@@ -150,7 +159,11 @@ async def get_task_data(dialog_manager: DialogManager, **kwargs):
     group_id = dialog_manager.current_context().dialog_data["group_id"]
 
     task_data = await get_task_info(task_id, group_id, user.cookies)
+    primary_score = task_data['scoreMax']
+    task_type = task_data['tag']['type']
+    second_year = dialog_manager.current_context().dialog_data["second_year"]
 
+    secondary_score = calculate_score(primary_score, task_type, second_year)
     return {
         "title": task_data["title"],
         "lesson_title": task_data['lesson']['title'],
@@ -235,10 +248,11 @@ ui = Dialog(
         state=CoursesDialog.course_info,
     ),
     Window(
-        Const("<b>Информация по уроку</b>"),
+        Const("<b>ℹ Информация по уроку</b>"),
         Format("<b>Название</b>: <code>{title}</code>"),
         Format("<b>Тип</b>: <code>{type}</code>"),
         Format("<b>Балл</b>: <code>{score}</code>"),
+        Format("<b>Итоговый балл</b>: <code>{secondary_score}</code>\n"),
         Format("<b>Всего задач</b>: <code>{num_tasks}</code>"),
         Format("<b>Решено задач</b>: <code>{num_passed}</code>"),
         Group(
@@ -257,10 +271,11 @@ ui = Dialog(
         state=CoursesDialog.lesson_info,
     ),
     Window(
-        Const("<b>Информация по задаче</b> \n"),
+        Const("<b>ℹ Информация по задаче</b> \n"),
         Format("<b>Название урока</b>: <code>{lesson_title}</code>"),
         Format("<b>Название задачи</b>: <code>{title}</code>\n"),
         Format("<b>Максимальный балл</b>: <code>{score_max}</code>"),
+        Format("<b>Итоговый балл</b>: <code>{secondary_score}</code>"),
         Format("<b>Дедлайн</b>: <code>{deadline}</code>"),
         Format("<b>Тип проверки</b>: <code>{manual_check}</code>"),
         Format("<b>ID решения</b>: <code>{solution_id}</code>"),

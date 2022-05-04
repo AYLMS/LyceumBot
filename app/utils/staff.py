@@ -36,5 +36,4 @@ sections_types = {
 lesson_types = {
     "normal": "Обычный",
     "test": "Тест",
-
 }
