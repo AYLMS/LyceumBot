@@ -10,7 +10,6 @@ from aiogram_dialog.widgets.kbd import (
     Column,
     Url,
     ScrollingGroup,
-    ListGroup,
     Cancel, Group,
 )
 from aiogram_dialog.widgets.text import Const, Format

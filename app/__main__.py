@@ -20,6 +20,8 @@ import app
 from app import config
 from app.ui.commands import remove_bot_commands, set_bot_commands
 from app.utils import db
+from app.utils.api import get_notifications
+from app.utils.notifications import send_notifications
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
@@ -68,6 +70,19 @@ async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
     await app.bot.session.close()
 
 
+async def notifications_polling():
+    while True:
+        async with app.sessionmanager() as session:
+            users = await session.get_registered_users()
+        for user in users:
+            user_id = user[0]
+            cookies = user[1]
+            notifications_json, csrf_token = await get_notifications(cookies)
+            await send_notifications(user_id, notifications_json, cookies, csrf_token)
+
+        await asyncio.sleep(60)
+
+
 async def main():
     logging_level = logging.DEBUG if app.arguments.test else logging.INFO
     coloredlogs.install(level=logging_level)
@@ -100,14 +115,15 @@ async def main():
     app.dp.shutdown.register(on_shutdown)
     app.registry = DialogRegistry(app.dp)
     app.client = Client(
-        session_name="app",
+        name="app",
         no_updates=True,
-        parse_mode="HTML",
         api_id=config.api.id,
         api_hash=config.api.hash,
         bot_token=token,
         workdir="../",
     )
+
+    asyncio.create_task(notifications_polling())
 
     if config.settings.use_pyrogram_client:
         await app.client.start()

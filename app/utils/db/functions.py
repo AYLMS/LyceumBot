@@ -25,6 +25,10 @@ class DB(AsyncSession, ABC):
         q = func.count(User.id)
         return await self.scalar(q)
 
+    async def get_registered_users(self):
+        q = select(User.id, User.cookies).where(User.registered == True)
+        return [(user[0], user[1]) for user in await self.execute(q)]
+
     async def change_user(self, user_id, key, value):
         q = update(User).where(User.id == user_id).values({key: value})
         await self.execute(q)
