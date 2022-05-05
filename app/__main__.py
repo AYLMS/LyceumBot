@@ -71,6 +71,8 @@ async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
 
 
 async def notifications_polling():
+    from app import bot
+
     while True:
         async with app.sessionmanager() as session:
             users = await session.get_registered_users()
@@ -78,7 +80,12 @@ async def notifications_polling():
             user_id = user[0]
             cookies = user[1]
             notifications_json, csrf_token = await get_notifications(cookies)
-            await send_notifications(user_id, notifications_json, cookies, csrf_token)
+            notis = await send_notifications(notifications_json, cookies, csrf_token)
+            for text, rm in notis:
+                if rm:
+                    await bot.send_message(user_id, text, reply_markup=rm)
+                else:
+                    await bot.send_message(user_id, text)
 
         await asyncio.sleep(60)
 

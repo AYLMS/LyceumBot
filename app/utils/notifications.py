@@ -1,19 +1,19 @@
-import json
 from datetime import datetime
 
-import app
-from app.keyboards.inline.course_keyboard import get_course_keyboard
+from app.keyboards.inline.course_keyboard import get_course_keyboard, \
+    get_task_keyboard
 from app.utils.api import read_notification
 from app.utils.staff import solution_result
 
 
-async def send_notifications(user_id, notifications_json, cookies, csrf_token):
+async def send_notifications(notifications_json, cookies, csrf_token):
     notifications: dict = notifications_json["notificationMap"]
+    notis = []
     for notification in notifications.values():
         text = "<b>🔔 Новое уведомление </b> \n\n"
         notification_type = notification["type"]
 
-        await read_notification(cookies, notification['id'], csrf_token)
+        # await read_notification(cookies, notification['id'], csrf_token)
 
         reply_markup = None
 
@@ -79,5 +79,4 @@ async def send_notifications(user_id, notifications_json, cookies, csrf_token):
                                              task_id, solution_id)
         notis.append((text, reply_markup))
 
-        await app.bot.send_message(user_id, text, reply_markup=reply_markup)
-
+    return notis
