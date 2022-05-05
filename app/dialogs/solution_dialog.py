@@ -5,6 +5,7 @@ from aiogram_dialog.manager.protocols import ManagedDialogAdapterProto
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, Format
+from datetime import datetime
 
 from app import sessionmanager, bot
 from app.states.solution import SolutionDialog
@@ -37,6 +38,8 @@ async def get_solution_data(dialog_manager: DialogManager, **kwargs):
     solution_data = await get_solution_information(solution_id, cookies)
     file_url = solution_data["solution"]["latestSubmission"]["file"]["url"]
     await bot.send_document(user_id, URLInputFile(file_url, file_url.split("/")[-1]))
+    deadline = datetime.fromisoformat(solution_data["solution"]["task"]["lesson"]["deadline"])
+    send_time = datetime.fromisoformat(solution_data["solution"]["latestSubmission"]["file"]["addedTime"])
     return {
         "test_result": solution_result[solution_data["solution"]["status"]["type"]],
         "solution_score": solution_data["solution"]["score"],
@@ -46,8 +49,8 @@ async def get_solution_data(dialog_manager: DialogManager, **kwargs):
         "check_type": solution_check_type[
             solution_data["solution"]["task"]["hasManualCheck"]
         ],
-        "deadline": solution_data["solution"]["task"]["lesson"]["deadline"],
-        "send_time": solution_data["solution"]["latestSubmission"]["file"]["addedTime"],
+        "deadline": deadline.strftime('%d.%m.%Y %H:%M'),
+        "send_time": send_time.strftime('%d.%m.%Y %H:%M'),
         "verdict": solution_verdict[
             solution_data["solution"]["latestSubmission"]["verdict"]
         ],

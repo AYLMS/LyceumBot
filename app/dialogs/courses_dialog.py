@@ -1,4 +1,5 @@
 from typing import Any
+from datetime import datetime
 
 from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager, Dialog
@@ -10,7 +11,8 @@ from aiogram_dialog.widgets.kbd import (
     Column,
     Url,
     ScrollingGroup,
-    Cancel, Group,
+    Cancel,
+    Group,
 )
 from aiogram_dialog.widgets.text import Const, Format
 
@@ -20,15 +22,20 @@ from app.utils.api import (
     get_user_information,
     get_lessons_information,
     get_lesson_info,
-    get_lesson_tasks, get_task_info,
+    get_lesson_tasks,
+    get_task_info,
 )
 from app.utils.score import calculate_score
-from app.utils.staff import task_solution_type, sections_types, lesson_types, \
-    solution_check_type
+from app.utils.staff import (
+    task_solution_type,
+    sections_types,
+    lesson_types,
+    solution_check_type,
+)
 
 
 async def on_course_selected(
-        c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
+    c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
 ):
     manager.current_context().dialog_data["course_id"] = int(item_id)
     await manager.dialog().next()
@@ -50,8 +57,7 @@ async def get_data(dialog_manager: DialogManager, **kwargs):
         )
     )
 
-    dialog_manager.current_context().dialog_data[
-        "user_information"] = user_information
+    dialog_manager.current_context().dialog_data["user_information"] = user_information
 
     courses = [
         (course["title"], course["id"])
@@ -75,8 +81,9 @@ async def get_course_data(dialog_manager: DialogManager, **kwargs):
         if course["id"] == course_id:
             group_id = course["group"]["id"]
 
-            dialog_manager.current_context().dialog_data[
-                "second_year"] = "Основы промышленного" in course["title"]
+            dialog_manager.current_context().dialog_data["second_year"] = (
+                "Основы промышленного" in course["title"]
+            )
 
             dialog_manager.current_context().dialog_data["group_id"] = group_id
 
@@ -84,8 +91,7 @@ async def get_course_data(dialog_manager: DialogManager, **kwargs):
                 course_id, group_id, user.cookies
             )
 
-            lessons = [(lesson["title"], lesson["id"]) for lesson in
-                       lessons_json]
+            lessons = [(lesson["title"], lesson["id"]) for lesson in lessons_json]
 
             teachers = ", ".join(
                 [
@@ -118,11 +124,9 @@ async def get_lesson_data(dialog_manager: DialogManager, **kwargs):
     group_id = dialog_manager.current_context().dialog_data["group_id"]
     course_id = dialog_manager.current_context().dialog_data["course_id"]
 
-    lesson_data = await get_lesson_info(lesson_id, course_id, group_id,
-                                        user.cookies)
+    lesson_data = await get_lesson_info(lesson_id, course_id, group_id, user.cookies)
 
-    lesson_tasks = await get_lesson_tasks(lesson_id, course_id, group_id,
-                                          user.cookies)
+    lesson_tasks = await get_lesson_tasks(lesson_id, course_id, group_id, user.cookies)
     tasks = []
     second_year = dialog_manager.current_context().dialog_data["second_year"]
     secondary_score = 0
@@ -130,13 +134,21 @@ async def get_lesson_data(dialog_manager: DialogManager, **kwargs):
         tasks.append((sections_types[section["id"]], section["id"]))
 
         secondary_score += sum(
-            calculate_score(task["scoreMax"], section["type"], second_year) for
-            task in section['tasks'])
+            calculate_score(task["scoreMax"], section["type"], second_year)
+            for task in section["tasks"]
+        )
 
         now = [
-            (task_solution_type[str(task['solution']['status']['id']) if task[
-                'solution'] else "6"] + ' ' + task[
-                 'title'], task['id']) for task in section['tasks']]
+            (
+                task_solution_type[
+                    str(task["solution"]["status"]["id"]) if task["solution"] else "6"
+                ]
+                + " "
+                + task["title"],
+                task["id"],
+            )
+            for task in section["tasks"]
+        ]
         tasks.extend(now)
 
     return {
@@ -158,32 +170,33 @@ async def get_task_data(dialog_manager: DialogManager, **kwargs):
     group_id = dialog_manager.current_context().dialog_data["group_id"]
 
     task_data = await get_task_info(task_id, group_id, user.cookies)
-    primary_score = task_data['scoreMax']
-    task_type = task_data['tag']['type']
+    primary_score = task_data["scoreMax"]
+    task_type = task_data["tag"]["type"]
     second_year = dialog_manager.current_context().dialog_data["second_year"]
 
     secondary_score = calculate_score(primary_score, task_type, second_year)
+
+    deadline = datetime.fromisoformat(task_data["deadline"])
     return {
         "title": task_data["title"],
-        "lesson_title": task_data['lesson']['title'],
-        "score_max": task_data['scoreMax'],
-        "deadline": task_data['deadline'],
-        "manual_check": solution_check_type[bool(task_data['hasManualCheck'])],
-        "solution_id": task_data['solutionId'] if task_data[
-            'solutionId'] else None,
+        "lesson_title": task_data["lesson"]["title"],
+        "score_max": task_data["scoreMax"],
+        "deadline": deadline.strftime('%d.%m.%Y %H:%M'),
+        "manual_check": solution_check_type[bool(task_data["hasManualCheck"])],
+        "solution_id": task_data["solutionId"] if task_data["solutionId"] else None,
         "secondary_score": secondary_score,
     }
 
 
 async def lessons_selected(
-        c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
+    c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
 ):
     manager.current_context().dialog_data["lesson_id"] = int(item_id)
     await manager.dialog().next()
 
 
 async def task_selected(
-        c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
+    c: CallbackQuery, widget: Any, manager: DialogManager, item_id: str
 ):
     manager.current_context().dialog_data["task_id"] = int(item_id)
     await manager.dialog().next()
@@ -203,8 +216,7 @@ ui = Dialog(
     Window(
         Const("<b>📌 Выберите курс</b>"),
         courses_select,
-        Button(Const("🚫 Закрыть"), on_click=lambda c, b, m: m.done(),
-               id="close"),
+        Button(Const("🚫 Закрыть"), on_click=lambda c, b, m: m.done(), id="close"),
         getter=get_data,
         state=CoursesDialog.select_courses,
     ),
@@ -216,8 +228,7 @@ ui = Dialog(
         Format("<b>Бонусные баллы</b>: <code>{bonusScore}</code>"),
         Format("<b>Количество отправок</b>: <code>{numTasks}</code>"),
         Format("<b>Количество принятых отправок</b>: <code>{numPassed}</code>"),
-        Format(
-            "<b>Количество отправленных на доработку</b>: <code>{numRework}</code>"),
+        Format("<b>Количество отправленных на доработку</b>: <code>{numRework}</code>"),
         ScrollingGroup(
             Select(
                 Format("{item[0]}"),
@@ -284,5 +295,5 @@ ui = Dialog(
         Cancel(Const("🚫 Закрыть")),
         getter=get_task_data,
         state=CoursesDialog.task_info,
-    )
+    ),
 )
