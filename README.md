@@ -1,32 +1,26 @@
-# Telegram Bot Template
+# Yandex Lyceum Bot
 
-### Useful and multifunction bot template, which use aiogram and pyrogram libraries
+### Бот для учеников Yandex LMS
 
 ![Telegram](https://img.shields.io/badge/Telegram-blue?style=flat&logo=telegram)
-[![DeepSource](https://deepsource.io/gh/fast-geek/telegram-bot-template.svg/?label=resolved+issues&token=xT19E0s_Ut8tM94CcpLA9exx)](https://deepsource.io/gh/fast-geek/telegram-bot-template/?ref=repository-badge)
-[![CodeFactor](https://www.codefactor.io/repository/github/fast-geek/telegram-bot-template/badge?s=5c628f092285245c2cbab683d2509317bcca48c9)](https://www.codefactor.io/repository/github/fast-geek/telegram-bot-template)
-![CodeStyle](https://img.shields.io/badge/code%20style-black-black)
 ![PythonVersions](https://img.shields.io/pypi/pyversions/aiogram)
+![aiogram 3](https://img.shields.io/badge/dev--3.x-aiogram-blue)
+![pyrogram](https://img.shields.io/badge/latest-pyrogram-orange)
+![aiogram-dialog](https://img.shields.io/badge/beta--2.x-aiogram__dialog-green)
 
-## [Sample bot](https://t.me/sample_lav_bot)
+## [Yandex Lyceum Bot](https://t.me/YandexLMS_bot)
 
-## Features
+## Возможности
 
-* ![aiogram 3](https://img.shields.io/badge/dev--3.x-aiogram-blue) as a main library
-* ![pyrogram](https://img.shields.io/badge/latest-pyrogram-orange) (Optional) for MTProto requests, such as bulk delete,
-  resolve by username and list participants in a group
-* ![aiogram-dialog](https://img.shields.io/badge/beta--2.x-aiogram__dialog-green) (Optional) for creating multi-step
-  dialogs
-* ☁️ Webhook and long polling with local Bot API server support
-* 🎨 Beautiful and informative colored logs
-* 🛠 Throttling and db middlewares by default
-* 📝 Changing UI commands
-* 👨🏻‍💻 Owner filter
-* ℹ️ Demo usage of dialogs and inline queries
+* Показ курсов, с информацией о задачах и уроках
+* Отправка уведомлений и прочтение их
+* Расчет вторичного балла для задач и уроков
+* Информация о решении по его ID или ссылке
+* Показ данных пользователя и его родителей
 
-## Usage
+## Использование
 
-* 📌 [Create](https://github.com/fast-geek/telegram-bot-template/generate) and clone repo from this template
-* 🔑 Change bot settings in `config.toml`
-* 📎 Install requirements from `requirements.txt`
-* 🚀 Run bot via `python -m app`
+* 📌 [Создать](https://github.com/fast-geek/telegram-bot-template/generate) и клонировать бота из шаблона
+* 🔑 Изменить настройки бота в `config.toml`
+* 📎 Установить зависимости из `requirements.txt`
+* 🚀 Запустить бота с помощью `python -m app`
