@@ -4,11 +4,11 @@ from aiohttp import ClientSession
 
 
 async def get_user_information(
-        with_courses_summary: bool,
-        with_expelled: bool,
-        with_children: bool,
-        with_parents: bool,
-        cookies: bytes,
+    with_courses_summary: bool,
+    with_expelled: bool,
+    with_children: bool,
+    with_parents: bool,
+    cookies: bytes,
 ):
     cookies = pickle.loads(cookies)
     session = ClientSession(cookies=cookies)
@@ -63,8 +63,7 @@ async def get_lesson_tasks(lesson_id, course_id, group_id, cookies):
     return await (
         await session.get(
             "https://lyceum.yandex.ru/api/student/lessonTasks",
-            params={"courseId": course_id, "groupId": group_id,
-                    "lessonId": lesson_id},
+            params={"courseId": course_id, "groupId": group_id, "lessonId": lesson_id},
         )
     ).json()
 
@@ -87,13 +86,16 @@ async def get_notifications(cookies, is_read=False):
         "https://lyceum.yandex.ru/api/notifications",
         params={"isRead": str(is_read)},
     )
-    csrf_token = request.cookies['csrftoken'].coded_value
+    csrf_token = request.cookies["csrftoken"].coded_value
     return await request.json(), csrf_token
 
 
 async def read_notification(cookies, notification_id, csrf_token):
     cookies = pickle.loads(cookies)
-    session = ClientSession(cookies=cookies, headers={'Content-Type': 'application/json', 'X-CSRF-Token': csrf_token})
+    session = ClientSession(
+        cookies=cookies,
+        headers={"Content-Type": "application/json", "X-CSRF-Token": csrf_token},
+    )
     await session.patch(
         f"https://lyceum.yandex.ru/api/notifications/read/{notification_id}",
     )
