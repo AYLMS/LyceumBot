@@ -3,17 +3,17 @@ from datetime import datetime
 from app.keyboards.inline.course_keyboard import get_course_keyboard, \
     get_task_keyboard
 from app.utils.api import read_notification
-from app.utils.staff import solution_result
 
 
 async def send_notifications(notifications_json, cookies, csrf_token):
     notifications: dict = notifications_json["notificationMap"]
+
+    await read_notification(cookies, csrf_token)
+
     notis = []
     for notification in notifications.values():
         text = "<b>🔔 Новое уведомление </b> \n\n"
         notification_type = notification["type"]
-
-        # await read_notification(cookies, notification['id'], csrf_token)
 
         reply_markup = None
 
@@ -36,7 +36,7 @@ async def send_notifications(notifications_json, cookies, csrf_token):
             emoji = (
                 "🟢"
                 if notification["objectData"]["score"]
-                == notification["objectData"]["task"]["scoreMax"]
+                   == notification["objectData"]["task"]["scoreMax"]
                 else "🔴"
             )
             text += (
@@ -63,7 +63,7 @@ async def send_notifications(notifications_json, cookies, csrf_token):
             emoji = (
                 "🟢"
                 if notification["objectData"]["taskSolution"]["score"]
-                == notification["objectData"]["taskSolution"]["task"]["scoreMax"]
+                   == notification["objectData"]["taskSolution"]["task"]["scoreMax"]
                 else "🔴"
             )
             text += (

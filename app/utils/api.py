@@ -90,12 +90,12 @@ async def get_notifications(cookies, is_read=False):
     return await request.json(), csrf_token
 
 
-async def read_notification(cookies, notification_id, csrf_token):
+async def read_notification(cookies, csrf_token):
     cookies = pickle.loads(cookies)
     session = ClientSession(
         cookies=cookies,
         headers={"Content-Type": "application/json", "X-CSRF-Token": csrf_token},
     )
     await session.patch(
-        f"https://lyceum.yandex.ru/api/notifications/read/{notification_id}",
+        "https://lyceum.yandex.ru/api/notifications/read",
     )
