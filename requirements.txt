@@ -8,5 +8,5 @@ pyrogram==2.0.55
 sqlalchemy==1.4.41
 tgcrypto==1.2.3
 toml==0.10.2
-aiohttp==3.8.1
+aiohttp==3.8.3
 requests==2.27.1
